@@ -22,6 +22,19 @@ func getFilms(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, films)
 }
 
+func getFilmById(c *gin.Context) {
+	id := c.Param("id")
+
+	for _, f := range films {
+		if f.ID == id {
+			c.IndentedJSON(http.StatusOK, f)
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "film not found"})
+}
+
 func postFilms(c *gin.Context) {
 	var newFilm film
 
@@ -36,6 +49,7 @@ func postFilms(c *gin.Context) {
 func main() {
 	router := gin.Default()
 	router.GET("/films", getFilms)
+	router.GET("/films/:id", getFilmById)
 	router.POST("/films", postFilms)
 
 	router.Run("localhost:8000")
